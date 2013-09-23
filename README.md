@@ -1,4 +1,3 @@
-
 Ever been tempted to use JSON files as application data because it's simple? I was, and this small library is the result.
 
 #Examples (in coffeescript)
@@ -16,16 +15,16 @@ Of course, it's useful to do this over http.
 
 ```coffeesript
 app = (require 'express')()
+
 db.restify app
 ```
 
 Now we can do the above operations as:
 
-```
-POST http://localhost/data/collection1
-property value
+```bash
+curl --data "property=value" http://localhost/data/collection1
 
-GET http://localhost/data/collection1
+curl http://localhost/data/collection1
 ```
 
 #Similar Stuff#
