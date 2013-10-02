@@ -35,6 +35,7 @@ module.exports = (db_name, options = {})->
   commit = debounce flush, 200
 
   api =
+    
 
     # Drop a collection
     drop: (collection, done)->
@@ -131,6 +132,15 @@ module.exports = (db_name, options = {})->
 
       app.post "/data/:collection/:id", post_json
       app.post "/data/:collection", post_json
+
+    collections: (done)->
+      fs.readdir db_name, (err, files)->
+        async.map files, (file, callback)->
+            file = file.replace ".json", ""
+            api.collection file, callback
+          , ->
+            done collections
+
 
 
 

@@ -167,6 +167,16 @@
         };
         app.post("/data/:collection/:id", post_json);
         return app.post("/data/:collection", post_json);
+      },
+      collections: function(done) {
+        return fs.readdir(db_name, function(err, files) {
+          return async.map(files, function(file, callback) {
+            file = file.replace(".json", "");
+            return api.collection(file, callback);
+          }, function() {
+            return done(collections);
+          });
+        });
       }
     };
   };
