@@ -3,7 +3,7 @@ exec = require('child_process').exec
 _ = require 'underscore'
 async = require 'async'
 debounce = require './lib/debounce'
-
+path = require 'path'
 
 # A JSON filesystem store allowing read-all and write-one ops.
 # It should be concurrency safe WITHIN A SINGLE PROCESS.
@@ -12,6 +12,9 @@ module.exports = (db_name, options = {})->
   dirty_collections = {} # Keep track of which collections need cleaned
 
   db_name += '.db'
+  
+  if options.db_location
+    db_name = path.join options.db_location, db_name
 
   exec 'mkdir -p '+db_name, (err,out,serr)->
     if err then throw err
@@ -35,7 +38,6 @@ module.exports = (db_name, options = {})->
   commit = debounce flush, 200
 
   api =
-    
 
     # Drop a collection
     drop: (collection, done)->
@@ -134,12 +136,15 @@ module.exports = (db_name, options = {})->
       app.post "/data/:collection", post_json
 
     collections: (done)->
-      fs.readdir db_name, (err, files)->
-        async.map files, (file, callback)->
-            file = file.replace ".json", ""
-            api.collection file, callback
-          , ->
-            done collections
+      exec 'mkdir -p '+db_name, (err,out,serr)->
+        if err then throw err
+        fs.readdir db_name, (err, files)->
+          if err then throw err
+          async.map files, (file, callback)->
+              file = file.replace ".json", ""
+              api.collection file, callback
+            , ->
+              done collections
 
 
 
