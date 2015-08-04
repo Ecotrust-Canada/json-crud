@@ -12,9 +12,13 @@ module.exports = (db_name, options = {})->
   dirty_collections = {} # Keep track of which collections need cleaned
 
   db_name += '.db'
-  
   if options.db_location
     db_name = path.join options.db_location, db_name
+
+  if options.url_path
+    url_path = options.url_path + 'data/'
+  else
+    url_path = '/data/'
 
   exec 'mkdir -p '+db_name, (err,out,serr)->
     if err then throw err
@@ -57,7 +61,6 @@ module.exports = (db_name, options = {})->
     collection: (collection, done)->
       
       filename = db_name+"/"+collection+".json"
-
       load_collection = ->
         fs.readFile filename, (err, result)->
           if err then throw err
@@ -113,12 +116,11 @@ module.exports = (db_name, options = {})->
     # Take an express app and expose a collection via a rest interface, defined as follows:
     restify: (app)->
       store = @
-
-      app.get "/data/:collection/:id/del", (req, res)->
+      app.get url_path + ":collection/:id/del", (req, res)->
         store.del req.params.collection, {_id: req.params.id}, (err)->
           res.send {success: not err, message: err or ''}
 
-      app.get "/data/:collection", (req,res)->
+      app.get url_path + ":collection", (req,res)->
         store.all req.params.collection, (err, results)->
           if err then throw err
           res.send results
@@ -132,8 +134,8 @@ module.exports = (db_name, options = {})->
         store.put req.params.collection, obj, (err)->
           res.send {success: not err, message: err or ''}
 
-      app.post "/data/:collection/:id", post_json
-      app.post "/data/:collection", post_json
+      app.post url_path + ":collection/:id", post_json
+      app.post url_path + ":collection", post_json
 
     collections: (done)->
       exec 'mkdir -p '+db_name, (err,out,serr)->
@@ -145,9 +147,3 @@ module.exports = (db_name, options = {})->
               api.collection file, callback
             , ->
               done collections
-
-
-
-
-
-
