@@ -1,17 +1,16 @@
 {
   "name": "json-crud",
   "preferGlobal": true,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Countable <clark@countable.ca>",
   "description": "JSON storage with REST CRUD.",
-  "contributors": [ 
+  "contributors": [
     {
       "name": "Clark Van Oyen",
       "email": "clark@countable.ca"
-    } 
+    }
   ],
-  "bin": {
-  },
+  "bin": {},
   "scripts": {
     "start": "node server.js",
     "test": "vows --spec --isolate",
@@ -28,16 +27,15 @@
     "rest",
     "store"
   ],
-  "dependencies" : {
-    "async" : "*",
-    "underscore" : "*"
+  "dependencies": {
+    "async": "*",
+    "underscore": "*"
   },
   "analyze": false,
   "devDependencies": {
-    "vows" : "*"
+    "vows": "*"
   },
-  "bundledDependencies": [
-  ],  
+  "bundledDependencies": [],
   "license": "MIT",
   "engines": {
     "node": ">=0.6"
