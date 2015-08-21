@@ -147,6 +147,7 @@
           return store.del(req.params.collection, {
             _id: req.params.id
           }, function(err) {
+            res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
             return res.send({
               success: !err,
               message: err || ''
@@ -158,6 +159,7 @@
             if (err) {
               throw err;
             }
+            res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
             return res.send(results);
           });
         });
@@ -173,6 +175,7 @@
             obj._id = req.params.id;
           }
           return store.put(req.params.collection, obj, function(err) {
+            res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
             return res.send({
               success: !err,
               message: err || ''

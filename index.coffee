@@ -118,11 +118,13 @@ module.exports = (db_name, options = {})->
       store = @
       app.get url_path + ":collection/:id/del", (req, res)->
         store.del req.params.collection, {_id: req.params.id}, (err)->
+          res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0')
           res.send {success: not err, message: err or ''}
 
       app.get url_path + ":collection", (req,res)->
         store.all req.params.collection, (err, results)->
           if err then throw err
+          res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0')
           res.send results
 
       counter = 0
@@ -132,6 +134,7 @@ module.exports = (db_name, options = {})->
         obj = JSON.parse req.body.data
         obj._id ?= req.params.id
         store.put req.params.collection, obj, (err)->
+          res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0')
           res.send {success: not err, message: err or ''}
 
       app.post url_path + ":collection/:id", post_json
