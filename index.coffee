@@ -30,10 +30,11 @@ module.exports = (db_name, options = {})->
   flush = (done)->
     async.map (Object.keys dirty_collections), (collection, callback)->
         filename = db_name+"/"+collection+".json"
-        console.log 'writing', filename
-        fs.writeFile filename, JSON.stringify(collections[collection], null, 2), (err)->
-          throw err if err
-          callback()
+        # write ahead log
+        fs.writeFile filename + '.wal', JSON.stringify(collections[collection], null, 2), (err)->
+          fs.rename filename + '.wal', filename, (err)->
+            throw err if err
+            callback()
       , ->
         dirty_collections = {}
         done?()
